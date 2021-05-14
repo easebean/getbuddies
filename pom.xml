@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-messaging</artifactId>
-			</dependency>
+		</dependency>
 	</dependencies>
 
 	<build>
