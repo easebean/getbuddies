@@ -10,6 +10,8 @@ public class GetbuddiesApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(GetbuddiesApplication.class, args);
+		
+		//bootstraping the application
 	}
 
 }
