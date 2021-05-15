@@ -1,17 +1,21 @@
 package com.getbuddies.app.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,7 +28,7 @@ public class Room implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	@Column
 	private String name;
@@ -36,18 +40,28 @@ public class Room implements Serializable{
 	private Date created;
 	@Column(name = "end_time")
 	private Date endTime;
-	@OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-	private Set<RoomUsers> roomUsers;
-	@OneToOne(mappedBy = "room")
-	private ChatMessage chat;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "room_user",
+            joinColumns = {
+                    @JoinColumn(name = "room_id", referencedColumnName = "id",
+                            nullable = false, updatable = false)},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "user_id", referencedColumnName = "id",
+                            nullable = false, updatable = false)})
+	private Set<User> users = new HashSet<>(); 
+	@OneToMany(mappedBy = "room")
+	private Set<ChatMessage> chat;
 	public Room() {}
-	public Room(Long id, String name, char category, String createdBy, Date created, Date endTime) {
+	public Room(Long id, String name, char category, String createdBy, Date created, Date endTime, Set<User> users,
+			Set<ChatMessage> chat) {
 		this.id = id;
 		this.name = name;
 		this.category = category;
 		this.createdBy = createdBy;
 		this.created = created;
 		this.endTime = endTime;
+		this.users = users;
+		this.chat = chat;
 	}
 	public Long getId() {
 		return id;
@@ -85,10 +99,16 @@ public class Room implements Serializable{
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-	@Override
-	public String toString() {
-		return "Room [id=" + id + ", name=" + name + ", category=" + category + ", createdBy=" + createdBy
-				+ ", created=" + created + ", endTime=" + endTime + "]";
+	public Set<User> getUsers() {
+		return users;
 	}
-	
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+	public Set<ChatMessage> getChat() {
+		return chat;
+	}
+	public void setChat(Set<ChatMessage> chat) {
+		this.chat = chat;
+	}	
 }
