@@ -23,15 +23,15 @@ public class ChatMessageResource {
 		this.chatService = chatService;
 	}
 	
-	@GetMapping("/all/{room}")
-	public ResponseEntity<List<ChatMessage>> list(@PathVariable("room") Integer id){
+	@GetMapping("/all/{roomId}")
+	public ResponseEntity<List<ChatMessage>> list(@PathVariable("roomId") Long id){
 		List<ChatMessage> chats = chatService.list(id);
 		return new ResponseEntity<List<ChatMessage>>(chats,HttpStatus.OK);
 	}
 	
-	@PostMapping("/new")
-	public ResponseEntity<ChatMessage> add(@RequestBody ChatMessage chat){
-		ChatMessage newChat = chatService.save(chat);
+	@PostMapping("/new/{roomId}")
+	public ResponseEntity<ChatMessage> add(@RequestBody ChatMessage chat,@PathVariable("roomId") Long roomId){
+		ChatMessage newChat = chatService.save(chat,roomId);
 		return new ResponseEntity<>(newChat,HttpStatus.CREATED);
 	}
 	

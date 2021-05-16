@@ -35,6 +35,9 @@ public class ChatMessage implements Serializable{
 		this.author = author;
 		this.createDate = createDate;
 	}
+	public Integer getId() {
+		return id;
+	}
 	public String getText() {
 		return text;
 	}
@@ -52,6 +55,9 @@ public class ChatMessage implements Serializable{
 	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 	@Override
 	public String toString() {
