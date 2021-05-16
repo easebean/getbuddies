@@ -24,19 +24,23 @@ public class RoomService {
 		this.roomRepo = roomRepo;
 		this.userRepo = userRepo;
 	}
-	
+	/*
+	 * Create the room and add the owner to the room
+	 * Requires room object and user id
+	 */
 	public Room create(Room room, Long id) {
 		room = addUser(room, id);
 		return roomRepo.save(room);
 	}
-	
+	// List all the rooms
 	public List<Room> allRooms(){
 		return roomRepo.findAll();
 	}
-	
+	// Update room details
 	public Room updateRoom(Room room) {
 		return roomRepo.save(room);
 	}
+	// Delete room
 	@Transactional
 	public void deleteRoom(Long id) {
 		roomRepo.deleteRoomById(id);
@@ -84,5 +88,9 @@ public class RoomService {
 		room.getUsers().remove(user);
 		room = updateRoom(room);
 		return room;
+	}
+	
+	public List<Room> findRoomByName(String key){
+		return roomRepo.findByNameContainingIgnoreCase(key);
 	}
 }

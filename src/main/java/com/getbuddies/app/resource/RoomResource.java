@@ -55,6 +55,12 @@ public class RoomResource {
 		return new ResponseEntity<Room>(updateRoom,HttpStatus.OK);
 	}
 	
+	@GetMapping("/find/{name}")
+	public ResponseEntity<List<Room>> getRoomsByName(@PathVariable("name") String key){
+		List<Room> rooms = roomService.findRoomByName(key);
+		return new ResponseEntity<List<Room>>(rooms,HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/delete/{id}")
 	public ResponseEntity<?> deleteRoom(@PathVariable("id") Long id){
 		roomService.deleteRoom(id);
