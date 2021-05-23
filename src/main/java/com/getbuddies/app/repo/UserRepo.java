@@ -12,7 +12,7 @@ import com.getbuddies.app.model.User;
 public interface UserRepo extends JpaRepository<User, Long>{
 	
 	Optional<User> findUserById(Long id);
-	User findByUserName(String userName);
+	Optional<User> findByUserName(String userName);
 	List<User> findByNameContainingIgnoreCase(String name);
 	
 }
