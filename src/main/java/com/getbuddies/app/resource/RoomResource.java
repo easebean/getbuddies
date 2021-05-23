@@ -31,9 +31,9 @@ public class RoomResource {
 		return new ResponseEntity<List<Room>>(rooms,HttpStatus.OK);
 	}
 	
-	@PostMapping("/add")
-	public ResponseEntity<Room> addRoom(@RequestBody Room room){
-		Room newRoom = roomService.create(room);
+	@PostMapping("/create/{id}")
+	public ResponseEntity<Room> addRoom(@RequestBody Room room,@PathVariable("id") Long id){
+		Room newRoom = roomService.create(room,id);
 		return new ResponseEntity<Room>(newRoom,HttpStatus.CREATED);
 	}
 	
@@ -41,6 +41,24 @@ public class RoomResource {
 	public ResponseEntity<Room> updateRoom(@RequestBody Room room){
 		Room updateRoom = roomService.updateRoom(room);
 		return new ResponseEntity<Room>(updateRoom,HttpStatus.OK);
+	}
+	
+	@PutMapping("/{roomId}/add/{id}")
+	public ResponseEntity<Room> addUser(@PathVariable("roomId") Long roomId,@PathVariable("id") Long id){
+		Room updateRoom = roomService.addUserToRoom(roomId,id);
+		return new ResponseEntity<Room>(updateRoom,HttpStatus.OK);
+	}
+	
+	@PutMapping("/{roomId}/remove/{id}")
+	public ResponseEntity<Room> removeUser(@PathVariable("roomId") Long roomId,@PathVariable("id") Long id){
+		Room updateRoom = roomService.removeUserFromRoom(roomId,id);
+		return new ResponseEntity<Room>(updateRoom,HttpStatus.OK);
+	}
+	
+	@GetMapping("/find/{name}")
+	public ResponseEntity<List<Room>> getRoomsByName(@PathVariable("name") String key){
+		List<Room> rooms = roomService.findRoomByName(key);
+		return new ResponseEntity<List<Room>>(rooms,HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/delete/{id}")

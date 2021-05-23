@@ -9,7 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,7 +24,7 @@ public class ChatMessage implements Serializable{
 	private String text;
     private String author;
     private Date createDate;
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "room_id",referencedColumnName = "id")
     private Room room;
     
@@ -34,6 +34,9 @@ public class ChatMessage implements Serializable{
 		this.text = text;
 		this.author = author;
 		this.createDate = createDate;
+	}
+	public Integer getId() {
+		return id;
 	}
 	public String getText() {
 		return text;
@@ -52,6 +55,9 @@ public class ChatMessage implements Serializable{
 	}
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	public void setRoom(Room room) {
+		this.room = room;
 	}
 	@Override
 	public String toString() {

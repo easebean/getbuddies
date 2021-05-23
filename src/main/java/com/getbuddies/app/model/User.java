@@ -1,15 +1,19 @@
 package com.getbuddies.app.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "player")
@@ -20,11 +24,11 @@ public class User implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 	@Column
 	private String name;
-	@Column
+	@Column(unique = true)
 	private String userName;
 	@Column
 	private String password;
@@ -34,18 +38,19 @@ public class User implements Serializable{
 	private String phoneNumber;
 	@Column
 	private String city;
-	@OneToMany(mappedBy = "member")
-	private Set<RoomUsers> roomUsers;
+	
+	@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+	private Set<Room> rooms = new HashSet<>();
+	
 	public User() {}
-	public User(String name, String userName, String password, String email, String phoneNumber, String city,
-			Set<RoomUsers> roomUsers) {
+	public User(Long id, String name, String userName, String password, String email, String phoneNumber, String city) {
+		this.id = id;
 		this.name = name;
 		this.userName = userName;
 		this.password = password;
 		this.email = email;
 		this.phoneNumber = phoneNumber;
 		this.city = city;
-		this.roomUsers = roomUsers;
 	}
 	public Long getId() {
 		return id;
@@ -89,16 +94,17 @@ public class User implements Serializable{
 	public void setCity(String city) {
 		this.city = city;
 	}
-	public Set<RoomUsers> getRoomUsers() {
-		return roomUsers;
+	@JsonIgnore
+	public Set<Room> getRooms() {
+		return rooms;
 	}
-	public void setRoomUsers(Set<RoomUsers> roomUsers) {
-		this.roomUsers = roomUsers;
+	public void setRooms(Set<Room> rooms) {
+		this.rooms = rooms;
 	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", userName=" + userName + ", password=" + password + ", email="
-				+ email + ", phoneNumber=" + phoneNumber + ", city=" + city + ", roomUsers=" + roomUsers + "]";
-	}	
+				+ email + ", phoneNumber=" + phoneNumber + ", city=" + city + ", rooms=" + rooms + "]";
+	}
 	
 }

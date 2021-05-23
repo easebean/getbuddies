@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,15 +25,17 @@ public class ChatMessageResource {
 		this.chatService = chatService;
 	}
 	
-	@GetMapping("/all/{room}")
-	public ResponseEntity<List<ChatMessage>> list(@PathVariable("room") Integer id){
+	@GetMapping("/all/{roomId}")
+	public ResponseEntity<List<ChatMessage>> list(@PathVariable("roomId") Long id){
 		List<ChatMessage> chats = chatService.list(id);
 		return new ResponseEntity<List<ChatMessage>>(chats,HttpStatus.OK);
 	}
 	
-	@PostMapping("/new")
-	public ResponseEntity<ChatMessage> add(@RequestBody ChatMessage chat){
-		ChatMessage newChat = chatService.save(chat);
+	@PostMapping("/new/{roomId}")
+	@MessageMapping("/newMessage")
+	@SendTo("/all/{roomId}")
+	public ResponseEntity<ChatMessage> add(@RequestBody ChatMessage chat,@PathVariable("roomId") Long roomId){
+		ChatMessage newChat = chatService.save(chat,roomId);
 		return new ResponseEntity<>(newChat,HttpStatus.CREATED);
 	}
 	
