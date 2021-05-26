@@ -1,5 +1,7 @@
 package com.getbuddies.app;
 
+//Hi, this is Nupur
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
