@@ -1,6 +1,7 @@
 package com.getbuddies.app.resource;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.getbuddies.app.exception.UserNotFoundException;
+import com.getbuddies.app.model.Room;
 import com.getbuddies.app.model.User;
 import com.getbuddies.app.service.UserService;
 
@@ -26,7 +28,13 @@ public class UserResource {
 	public UserResource(UserService userService) {
 		this.userService = userService;
 	}
-
+	
+	@GetMapping("/room/{id}")
+	public ResponseEntity<Set<Room>> getAllRooms(@PathVariable("id") Long id){
+		Set<Room> rooms = userService.allRooms(id);
+		return new ResponseEntity<Set<Room>>(rooms,HttpStatus.OK);
+	}
+	
 	@GetMapping("/all")
 	public ResponseEntity<List<User>> getAllUsers(){
 		List<User> users = userService.allUsers();
@@ -37,6 +45,18 @@ public class UserResource {
 	public ResponseEntity<List<User>> getUsersByName(@PathVariable("name") String name){
 		List<User> users = userService.findUserByName(name);
 		return new ResponseEntity<List<User>>(users,HttpStatus.OK);
+	}
+	
+	@GetMapping("/get/{name}")
+	public ResponseEntity<User> getUserByUserName(@PathVariable("name") String name) throws UserNotFoundException{
+		User user = userService.findUserByUserName(name);
+		return new ResponseEntity<User>(user,HttpStatus.OK);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<User> getUserById(@PathVariable("id") Long id){
+		User user = userService.findUserById(id);
+		return new ResponseEntity<User>(user,HttpStatus.OK);
 	}
 	
 	@PostMapping("/add")
