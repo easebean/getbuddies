@@ -3,22 +3,27 @@ package com.getbuddies.app.service;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.getbuddies.app.exception.UserNotFoundException;
 import com.getbuddies.app.model.Room;
 import com.getbuddies.app.model.User;
+import com.getbuddies.app.repo.RoomRepo;
 import com.getbuddies.app.repo.UserRepo;
 
 @Service
 public class UserService {
 	private final UserRepo userRepo;
+	private final RoomRepo roomRepo;
 
 	@Autowired
-	public UserService(UserRepo userRepo) {
+	public UserService(UserRepo userRepo,RoomRepo roomRepo) {
 		super();
 		this.userRepo = userRepo;
+		this.roomRepo = roomRepo;
 	}
 
 	public User addUser(User user) {
@@ -76,5 +81,18 @@ public class UserService {
 
 	public List<User> findUserByName(String key) {
 		return userRepo.findByNameContainingIgnoreCase(key);
+	}
+	
+	@Transactional
+	public void deleteUser(Long id) {
+		User user = null;
+		try {
+			user = findUserById(id);
+		} catch (Exception e) {System.out.println(e.getMessage());}
+		for(Room room: user.getRooms()) {
+			room.getUsers().remove(user);
+		}
+		user.getRooms().removeAll(user.getRooms());
+		userRepo.deleteUserById(id);
 	}
 }

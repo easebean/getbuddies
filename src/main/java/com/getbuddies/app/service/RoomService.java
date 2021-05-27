@@ -44,6 +44,14 @@ public class RoomService {
 	// Delete room
 	@Transactional
 	public void deleteRoom(Long id) {
+		Room room = null;
+		try {
+			room = findRoomById(id);
+		} catch (RoomNotFoundException e) {
+			e.printStackTrace();
+		}
+		room.getUsers().removeAll(room.getUsers());
+		room.getChat().removeAll(room.getChat());
 		roomRepo.deleteRoomById(id);
 	}
 	

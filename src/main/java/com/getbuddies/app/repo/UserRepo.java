@@ -11,6 +11,7 @@ import com.getbuddies.app.model.User;
 @Repository
 public interface UserRepo extends JpaRepository<User, Long>{
 	
+	void deleteUserById(Long id);
 	Optional<User> findUserById(Long id);
 	Optional<User> findByUserName(String userName);
 	List<User> findByNameContainingIgnoreCase(String name);
