@@ -40,6 +40,8 @@ public class Room implements Serializable{
 	private Date created;
 	@Column(name = "end_time")
 	private Date endTime;
+	@Column
+	private String details;
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "room_user",
             joinColumns = {
@@ -52,17 +54,18 @@ public class Room implements Serializable{
 	@OneToMany(mappedBy = "room")
 	private Set<ChatMessage> chat;
 	public Room() {}
-	public Room(Long id, String name, char category, String createdBy, Date created, Date endTime, Set<User> users,
-			Set<ChatMessage> chat) {
-		this.id = id;
+	public Room(String name, char category, String createdBy, Date created, Date endTime, String details,
+			Set<User> users, Set<ChatMessage> chat) {
 		this.name = name;
 		this.category = category;
 		this.createdBy = createdBy;
 		this.created = created;
 		this.endTime = endTime;
+		this.details = details;
 		this.users = users;
 		this.chat = chat;
 	}
+
 	public Long getId() {
 		return id;
 	}
@@ -110,5 +113,11 @@ public class Room implements Serializable{
 	}
 	public void setChat(Set<ChatMessage> chat) {
 		this.chat = chat;
-	}	
+	}
+	public String getDetails() {
+		return details;
+	}
+	public void setDetails(String details) {
+		this.details = details;
+	}
 }

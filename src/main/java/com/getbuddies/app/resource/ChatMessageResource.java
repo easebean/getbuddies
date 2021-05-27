@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.getbuddies.app.model.ChatMessage;
 import com.getbuddies.app.service.ChatMessageService;
 
+@CrossOrigin(origins = "http://localhost:4200",maxAge = 3600)
 @RestController
 @RequestMapping("/chat")
 public class ChatMessageResource {
@@ -30,6 +34,8 @@ public class ChatMessageResource {
 	}
 	
 	@PostMapping("/new/{roomId}")
+	@MessageMapping("/newMessage")
+	@SendTo("/all/{roomId}")
 	public ResponseEntity<ChatMessage> add(@RequestBody ChatMessage chat,@PathVariable("roomId") Long roomId){
 		ChatMessage newChat = chatService.save(chat,roomId);
 		return new ResponseEntity<>(newChat,HttpStatus.CREATED);

@@ -28,7 +28,7 @@ public class User implements Serializable{
 	private Long id;
 	@Column
 	private String name;
-	@Column
+	@Column(unique = true)
 	private String userName;
 	@Column
 	private String password;

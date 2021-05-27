@@ -29,7 +29,8 @@ public class RoomService {
 	 * Requires room object and user id
 	 */
 	public Room create(Room room, Long id) {
-		room = addUser(room, id);
+		User user = findUser(id);
+		room.getUsers().add(user);
 		return roomRepo.save(room);
 	}
 	// List all the rooms
@@ -43,18 +44,15 @@ public class RoomService {
 	// Delete room
 	@Transactional
 	public void deleteRoom(Long id) {
-		roomRepo.deleteRoomById(id);
-	}
-	
-	public Room findRoom(Long id) {
 		Room room = null;
 		try {
-			room = roomRepo.findRoomById(id)
-					.orElseThrow(() -> new RoomNotFoundException("Room by id " + id + " was not found"));
+			room = findRoomById(id);
 		} catch (RoomNotFoundException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
-		return room;
+		room.getUsers().removeAll(room.getUsers());
+		room.getChat().removeAll(room.getChat());
+		roomRepo.deleteRoomById(id);
 	}
 	
 	public User findUser(Long id) {
@@ -67,25 +65,28 @@ public class RoomService {
 		}
 		return user;
 	}
-	
-	public Room addUser(Room room, Long id) {
-		User user = findUser(id);
+
+	public Room addUserToRoom(Room room, String userName) throws UserNotFoundException {
+		User user = null;
+		try {
+		user = userRepo.findByUserName(userName)
+				.orElseThrow(() -> new UserNotFoundException("User by username " + userName + " was not found"));
+		} catch (Exception e) {System.out.println(e.getMessage());}
+		// display user details that has been added 
 		System.out.println(user);
 		room.getUsers().add(user);
-		return room;
-	}
-
-	public Room addUserToRoom(Long roomId, Long id) {
-		Room room = findRoom(roomId);
-		room = addUser(room, id);
 		room = updateRoom(room);
 		return room;
 	}
 
-	public Room removeUserFromRoom(Long roomId, Long id) {
-		Room room = findRoom(roomId);
+	public Room removeUserFromRoom(Room room, Long id) {
 		User user = findUser(id);
-		room.getUsers().remove(user);
+		// display user details that has been removed 
+		System.out.println(user);
+		try {
+		room.getUsers().removeIf(a -> id.equals(a.getId()));
+		user.getRooms().remove(room);
+		} catch (Exception e) {System.out.println(e.getMessage());}
 		room = updateRoom(room);
 		return room;
 	}
@@ -93,4 +94,14 @@ public class RoomService {
 	public List<Room> findRoomByName(String key){
 		return roomRepo.findByNameContainingIgnoreCase(key);
 	}
+	
+	public Room findRoomById(Long id) throws RoomNotFoundException {
+		Room room = null;
+		try {
+		room = roomRepo.findRoomById(id)
+				.orElseThrow(() -> new RoomNotFoundException("Room by id " + id + " was not found"));
+		} catch (Exception e) {System.out.println(e.getMessage());}
+		return room;
+	}
+	
 }
